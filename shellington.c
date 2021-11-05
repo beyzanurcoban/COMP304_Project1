@@ -364,9 +364,43 @@ int process_command(struct command_t *command)
 		// set args[arg_count-1] (last) to NULL
 		command->args[command->arg_count-1]=NULL;
 
-		execvp(command->name, command->args); // exec+args+path
-		exit(0);
+		//execvp(command->name, command->args); // exec+args+path
+		
 		/// TODO: do your own exec with path resolving using execv()
+		
+		// the first argument of execvp() is the filename, it can resolve the path automatically, 
+		// it looks for the filename in all of the directories in the PATH environment variable
+		//
+		// however, the first argument of execv() is a path to the executable, it does not resolve the path by itself
+		// we should provide the path to it
+		
+
+		char *currentPath = getenv("PATH");
+		char *pathToken = strtok(currentPath, ":");
+		char *lastCofToken = pathToken; // to test whether we are at the last char of the currentPath or not
+
+		while(pathToken != NULL) {
+
+			char pathToCommand[strlen(command->name) + strlen(pathToken) + 1];
+			strcpy(pathToCommand, pathToken); // add all the tokens to the path
+
+			if(*(lastCofToken+1) != 0) {
+				lastCofToken++;
+			} else {
+				if(strcmp(lastCofToken, "/") != 0) {
+					// if we are at the last char, we add / to append the command name at the end of the path
+					strcat(pathToCommand, "/");
+				}
+
+				strcat(pathToCommand, command->name);
+				execv(pathToCommand, command->args); // if we are at the last char, execute the command after adding command name
+
+				pathToken = strtok(NULL, ":");
+			}
+		}
+
+		exit(0);
+		
 	}
 	else
 	{
