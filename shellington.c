@@ -340,6 +340,11 @@ int process_command(struct command_t *command)
 		}
 	}
 
+	if (strcmp(command->name, "remindme") == 0) {
+		remindme_command(command);
+		return SUCCESS;
+	}
+
 	pid_t pid=fork();
 	if (pid==0) // child
 	{
@@ -413,4 +418,57 @@ int process_command(struct command_t *command)
 
 	printf("-%s: %s: command not found\n", sysname, command->name);
 	return UNKNOWN;
+}
+
+int crontab(struct command_t *command, char *file_name) {
+	if(command->args[0] == NULL) {
+		perror("There is no enough argument to run remindme command!");
+		return -1;
+	}
+
+	char *message = (char *)malloc(strlen(command->args[1])+1);
+	strcpy(message, command->args[1]);	
+
+	char *time = (char *)malloc(strlen(command->args[0])+1);
+	strcpy(time, command->args[0]);
+
+	char *timeToken = strtok(time, ".");
+	char *hour = (char *)malloc(strlen(timeToken)+1);
+	strcpy(hour, timeToken);
+
+	timeToken = strtok(NULL, ".");
+	char *minute = (char *)malloc(strlen(timeToken)+1);
+	strcpy(minute, timeToken);
+
+	//printf("%s\n", time);
+	//printf("%s\n", hour);
+	//printf("%s\n", minute);
+	//printf("%s\n", message);
+	
+	char *notify_cmm = "export DISPLAY=:0.0 && /usr/bin/notify-send";
+
+	int cmm_line_len = strlen(minute) + strlen(hour) + 3 + strlen(notify_cmm) + strlen(message) + 10;
+
+	char *cmm_line = (char *)malloc(sizeof(char) * cmm_line_len);
+	snprintf(cmm_line, cmm_line_len, "%s %s %s %s %s %s %s", minute, hour, "*", "*", "*", notify_cmm, message);
+
+	FILE *file;
+	file = fopen(file_name, "w");
+
+	if(file != NULL) {
+		strcat(cmm_line, "\n");
+		fputs(cmm_line, file);
+		printf("%s", cmm_line);
+		free(cmm_line);
+		fclose(file);
+	} else {
+		perror("Cannot open the file!");
+		return -1;
+	}
+}
+
+int remindme_command(struct command_t *command) {
+	char *cron_file = "cron.txt";
+	crontab(command, cron_file);
+	execlp("crontab", "crontab", cron_file, NULL);
 }
