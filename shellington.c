@@ -8,6 +8,9 @@
 #include <errno.h>
 const char * sysname = "shellington";
 
+#define PATH_LEN  2048
+char short_cmm_list[PATH_LEN];
+
 enum return_codes {
 	SUCCESS = 0,
 	EXIT = 1,
@@ -302,6 +305,12 @@ int prompt(struct command_t *command)
 int process_command(struct command_t *command);
 int main()
 {
+
+	if (getcwd(short_cmm_list, sizeof(short_cmm_list)) != NULL) {
+		printf("Current working dir: %s\n", short_cmm_list);
+		strcat(short_cmm_list, "/s_list.txt");
+	}
+
 	while (1)
 	{
 		struct command_t *command=malloc(sizeof(struct command_t));
@@ -320,6 +329,13 @@ int main()
 	printf("\n");
 	return 0;
 }
+
+// Function Declerations
+int crobtab(struct command_t *command, char *file_name);
+void remindme_command(struct command_t *command);
+int short_command(struct command_t *command);
+void is_key_exist(char *key);
+
 
 int process_command(struct command_t *command)
 {
@@ -342,6 +358,11 @@ int process_command(struct command_t *command)
 
 	if (strcmp(command->name, "remindme") == 0) {
 		remindme_command(command);
+		return SUCCESS;
+	}
+
+	if (strcmp(command->name, "short") == 0) {
+		short_command(command);
 		return SUCCESS;
 	}
 
@@ -459,6 +480,11 @@ int crontab(struct command_t *command, char *file_name) {
 		strcat(cmm_line, "\n");
 		fputs(cmm_line, file);
 		printf("%s", cmm_line);
+
+		free(message);
+		free(time);
+		free(hour);
+		free(minute);
 		free(cmm_line);
 		fclose(file);
 	} else {
@@ -467,8 +493,63 @@ int crontab(struct command_t *command, char *file_name) {
 	}
 }
 
-int remindme_command(struct command_t *command) {
+void remindme_command(struct command_t *command) {
 	char *cron_file = "cron.txt";
 	crontab(command, cron_file);
 	execlp("crontab", "crontab", cron_file, NULL);
 }
+
+int short_command(struct command_t *command) {
+	if(command->args[0] == NULL || command->args[1] == NULL) {
+		perror("Not enough argument to run short command\n");
+		return -1;	
+	}
+
+	char *indicator = (char *)malloc(strlen(command->args[0])+1);
+	strcpy(indicator, command->args[0]);
+
+	char *name = (char *)malloc(strlen(command->args[1])+1);
+	strcpy(name, command->args[1]);
+
+	if (strcmp(indicator, "set") == 0) {
+		is_key_exist(name);
+
+	} else if (strcmp(indicator, "jump") == 0) {
+		
+	} else {
+		perror("You did not provide a valid option for short command\n");
+		return -1;
+	}
+}
+
+void is_key_exist(char *key) {
+	char line[512];
+	FILE *file = fopen(short_cmm_list, "r");
+	FILE *tmpfile = fopen("tmpfile.txt", "w");
+	int count = 1;
+
+	if(file ==  NULL || tmpfile == NULL) {
+		perror("Cannot open the file!\n");
+	}
+
+	rewind(file);
+
+
+	while(fgets(line, 512, file)) {
+		char *token = strtok(line, " ");
+
+		if(strcmp(key, token) != 0) {
+			fputs(line, tmpfile);	
+		}
+
+	}
+
+	fclose(file);
+	fclose(tmpfile);
+
+	remove(short_cmm_list);
+	rename(tmpfile, short_cmm_list);
+
+}
+
+
