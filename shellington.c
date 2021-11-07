@@ -340,11 +340,13 @@ int main()
 	return 0;
 }
 
-// Function Declerations
+// Function Declarations
 int crobtab(struct command_t *command, char *file_name);
 void remindme_command(struct command_t *command);
 int short_command(struct command_t *command);
 void is_key_exist(char *key);
+int bookmark_command(struct command_t *command);
+int kerem_awesome_command(struct command_t *command);
 
 
 int process_command(struct command_t *command)
@@ -562,7 +564,7 @@ void is_key_exist(char *key) {
 
 }
 
-int bookmark_command(struct command_t *command, struct command_t *bookmarks) {
+int bookmark_command(struct command_t *command) {
 	if(command->arg_count == 2) {
 		
 		if(strcmp(command->args[0], "-i") == 0) {
@@ -661,15 +663,15 @@ void addBookmark(char *command) {
 	ptr->next = new;
 }
 
-void deleteBookmark(int key) {
+int deleteBookmark(int key) {
 	struct bmnode* bmcurrent = bmhead;
 	struct bmnode* bmprevious = NULL;
 	
-	if(bmhead == NULL) return NULL;
+	if(bmhead == NULL) return -1;
 	
 	while(bmcurrent->key != key) {
 		if(bmcurrent->next == NULL) {
-			return NULL;
+			return -1;
 		} else {
 			bmprevious = bmcurrent;
 			bmcurrent = bmcurrent->next;
@@ -680,5 +682,37 @@ void deleteBookmark(int key) {
 		bmhead = bmhead->next;
 	} else {
 		bmprevious->next = bmcurrent->next;
+	}
+}
+
+int kerem_awesome_command(struct command_t *command) {
+	if(command->arg_count == 2) {
+		
+		char sign[20];
+		strcpy(command->args[1], sign);
+		
+		if(strcmp(command->args[0], "plane") == 0) {
+			// ASCII animation of a banner on a plane
+			int i;
+			for(i=0; i<60; i++) {
+				
+				
+				system("sleep .5");
+			}
+			return 1;
+		}
+	
+		if(strcmp(command->args[0], "streetsign") == 0) {
+			// ASCII animation of a streetsign
+		}
+		
+		if(strcmp(command->args[0], "protester") == 0) {
+			// ASCII animation of a protester holding a sign
+		}
+	}
+	
+	else {
+		perror("Non-permitted use of Kerem's Awesome Command.");
+		return -1;
 	}
 }
