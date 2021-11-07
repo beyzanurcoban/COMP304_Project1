@@ -11,6 +11,16 @@ const char * sysname = "shellington";
 #define PATH_LEN  2048
 char short_cmm_list[PATH_LEN];
 
+// Bookmark node structure (Linked List)
+struct bmnode {
+	char command[500];
+	int key;
+	struct bmnode *next;
+}
+
+struct bmnode *bmhead = NULL;
+struct bmnode *bmcurrent = NULL;
+
 enum return_codes {
 	SUCCESS = 0,
 	EXIT = 1,
@@ -552,4 +562,123 @@ void is_key_exist(char *key) {
 
 }
 
+int bookmark_command(struct command_t *command, struct command_t *bookmarks) {
+	if(command->arg_count == 2) {
+		
+		if(strcmp(command->args[0], "-i") == 0) {
+			// Execute command at index
+			int bm_index = command->args[1];
+			
+			process_command(findBookmark(bm_index)->command);
+		}
+	
+		if(strcmp(command->args[0], "-d") == 0) {
+			// Delete bookmark at index
+			int bm_index = command->args[1];
+			
+			deleteBookmark(bm_index);
+		}
+	}
+	
+	else if (command->arg_count == 1) {
+		
+		if(strcmp(command->args[0], "-l") == 0) {
+			// List all bookmarks
+			printAllBookmarks();
+		}
+		
+		else {
+			// Save bookmark
+			addBookmark(command->args[0]);
+		}
+	}
+	
+	else {
+		perror("Non-permitted use of Bookmark.");
+		return -1;
+	}
+}
 
+void printAllBookmarks() {
+	struct bmnode *ptr = bmhead;
+	printf("\nCurrent Bookmarks");
+	
+	int i=0;
+	while(ptr != NULL) {
+		printf("\n\t %d %s", i, ptr->command);
+		i++;
+		ptr = ptr->next;
+	}
+}
+
+bool bookmarkIsEmpty() {
+	return bmhead == NULL;	
+}
+
+int bookmarkLength() {
+	int length = 0;
+	struct bmnode *bmcurrent;
+	
+	for(bmcurrent = bmhead; bmcurrent != NULL; bmcurrent = bmcurrent->next) {
+		length++;
+	}
+	
+	return length;
+}
+
+struct bmnode* findBookmark(int key) {
+	struct bmnode* bmcurrent = bmhead;
+	
+	if(bmhead == NULL) return NULL;
+	
+	while(bmcurrent->key != key) {
+		if(bmcurrent->next == NULL) {
+			return NULL;
+		} else {
+			bmcurrent = bmcurrent->next;
+		}
+	}
+	
+	return bmcurrent;
+}
+
+void addBookmark(char *command) {
+	struct bmnode *new = struct (bmnode*) malloc(sizeof(struct bmnode));
+	
+	struct bmnode *ptr = bmhead;
+	
+	int i=0;
+	while(ptr != NULL) {
+		printf("\n\t %d %s", i, ptr->command);
+		i++;
+		ptr = ptr->next;
+	}
+	
+	new->key = i;
+	new->next = NULL;
+	strcpy(new->command, command);
+	
+	ptr->next = new;
+}
+
+void deleteBookmark(int key) {
+	struct bmnode* bmcurrent = bmhead;
+	struct bmnode* bmprevious = NULL;
+	
+	if(bmhead == NULL) return NULL;
+	
+	while(bmcurrent->key != key) {
+		if(bmcurrent->next == NULL) {
+			return NULL;
+		} else {
+			bmprevious = bmcurrent;
+			bmcurrent = bmcurrent->next;
+		}
+	}
+	
+	if(bmcurrent == bmhead) {
+		bmhead = bmhead->next;
+	} else {
+		bmprevious->next = bmcurrent->next;
+	}
+}
