@@ -6,6 +6,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include <errno.h>
+#include <time.h>
+#include <signal.h>
 const char * sysname = "shellington";
 
 #define PATH_LEN  2048
@@ -16,7 +18,7 @@ struct bmnode {
 	char command[500];
 	int key;
 	struct bmnode *next;
-}
+};
 
 struct bmnode *bmhead = NULL;
 struct bmnode *bmcurrent = NULL;
@@ -343,10 +345,19 @@ int main()
 // Function Declarations
 int crobtab(struct command_t *command, char *file_name);
 void remindme_command(struct command_t *command);
-int short_command(struct command_t *command);
-void is_key_exist(char *key);
-int bookmark_command(struct command_t *command);
+//int short_command(struct command_t *command);
+//void is_key_exist(char *key);
+//int bookmark_command(struct command_t *command);
+//void printAllBookmarks();
+//bool bookmarkIsEmpty();
+//int bookmarkLength();
+//struct bmnode* findBookmark(int key);
+//void addBookmark(char *command);
+//int deleteBookmark(int key);
 int kerem_awesome_command(struct command_t *command);
+int beyza_awesome_command(struct command_t *command);
+void sig_handler(int signum);
+void waitSec(int sec);
 
 
 int process_command(struct command_t *command)
@@ -373,8 +384,13 @@ int process_command(struct command_t *command)
 		return SUCCESS;
 	}
 
-	if (strcmp(command->name, "short") == 0) {
+	/*if (strcmp(command->name, "short") == 0) {
 		short_command(command);
+		return SUCCESS;
+	}*/
+
+	if (strcmp(command->name, "beyzaw") == 0) {
+		beyza_awesome_command(command);
 		return SUCCESS;
 	}
 
@@ -511,7 +527,7 @@ void remindme_command(struct command_t *command) {
 	execlp("crontab", "crontab", cron_file, NULL);
 }
 
-int short_command(struct command_t *command) {
+/*int short_command(struct command_t *command) {
 	if(command->args[0] == NULL || command->args[1] == NULL) {
 		perror("Not enough argument to run short command\n");
 		return -1;	
@@ -562,9 +578,9 @@ void is_key_exist(char *key) {
 	remove(short_cmm_list);
 	rename(tmpfile, short_cmm_list);
 
-}
+} */
 
-int bookmark_command(struct command_t *command) {
+/*int bookmark_command(struct command_t *command) {
 	if(command->arg_count == 2) {
 		
 		if(strcmp(command->args[0], "-i") == 0) {
@@ -683,7 +699,7 @@ int deleteBookmark(int key) {
 	} else {
 		bmprevious->next = bmcurrent->next;
 	}
-}
+} */
 
 int kerem_awesome_command(struct command_t *command) {
 	if(command->arg_count == 2) {
@@ -715,4 +731,118 @@ int kerem_awesome_command(struct command_t *command) {
 		perror("Non-permitted use of Kerem's Awesome Command.");
 		return -1;
 	}
+}
+
+/* In this game, you will specify two argument: seconds and upper limit
+ * You will try to guess the randomly generated number in a certain amount of time.
+ * If you type 1, you will have 12 seconds, if you type 2, you will have 7 seconds.
+ * Upper limit is for the random generator, you can define the range of the number. */
+
+// You should use beyzaw command to run this method 
+int beyza_awesome_command(struct command_t *command) {
+	if(command->arg_count != 2) {
+		perror("The player did not specify enough argument to play the game!\n");
+		return -1;
+	}
+
+	printf("This is a mini game that can be played on terminal.\n");
+	int seconds = 0;
+
+	if(strcmp(command->args[0], "1") == 0) {
+		seconds = 12;
+		printf("You have %d seconds! Go!\n", seconds);
+	} else if (strcmp(command->args[0], "2") == 0) {
+		seconds = 7;
+		printf("You have %d seconds! Go!\n", seconds);
+	} else {
+		perror("You selected an invalid difficulty option. Please select 1 or 2!\n");
+		return -1;
+	}
+
+	char music[256];
+	strcpy(music, "rhytmbox-client --play-uri=");
+	char cwd[256];
+	getcwd(cwd, sizeof(cwd));
+
+	strcat(music, cwd);
+	strcat(music, "The_Muffin_Song.mp3");
+	printf("%s\n", music); 	
+
+	time_t t;
+	struct tm *tm;
+
+	tm = localtime(&t);
+	int s = seconds;
+
+	int N = atoi(command->args[1]);
+	int number = rand() % N;
+	int guess = 0;
+	int chance = 5;
+
+	/*while(chance >0) {
+		scanf("%d", &guess);
+
+		if (guess > number) {
+			printf("Lower!\n");
+			chance--;
+		} else if (guess < number) {
+			printf("Higher!\n");
+			chance--;
+		} else {
+			printf("Coorect!\n");
+			//system(music);
+			return SUCCESS;
+		}
+	}*/
+
+	while(seconds > 0) {
+		tm->tm_sec = s;
+		tm->tm_min = s/60;
+		tm->tm_hour = s/3600;
+
+		mktime(tm);
+
+		/*scanf("%d", &guess);
+
+		if(guess > number) {
+			printf("Lower!\n");
+		} else if (guess < number) {
+			printf("Higher!\n");
+		} else {
+			printf("Correct!\n");
+			return SUCCESS;
+		}*/
+
+		printf("%02d:%02d:%02d\n", tm->tm_hour, tm->tm_min, tm->tm_sec);
+		s--;
+		seconds--;
+		waitSec(1);
+	}
+
+	/*signal(SIGALRM, sig_handler);
+	alarm(seconds);
+
+	scanf("%d", &guess);
+
+	if(guess > number) {
+		printf("Lower!\n");
+	} else if (guess < number) {
+		printf("Higher!\n");
+	} else {
+		printf("Correct!\n");
+		return SUCCESS;
+	}*/
+
+	return SUCCESS;
+
+}
+
+void sig_handler(int signum) {
+	printf("Timeout! You Lose!\n");
+	exit(0);
+}	
+
+void waitSec(int sec) {
+	clock_t ending = clock() + (sec * CLOCKS_PER_SEC);
+	while (clock() < ending) {}
 }
