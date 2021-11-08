@@ -9,7 +9,7 @@ void dfs(struct task_struct *task) {
      struct task_struct *next;
      struct list_head *list;
 	
-	    printk(KERN_INFO "Name: %30s, Process ID: %d\n", task->comm, task->pid);
+	    printk(KERN_INFO "Name: %s, Process ID: %d\n", task->comm, task->pid);
 	
 	    list_for_each(list, &task->children) {
 		        next = list_entry(list, struct task_struct, sibling);
@@ -17,7 +17,20 @@ void dfs(struct task_struct *task) {
 	    }
 }
 
+int dfs_traverse_init(void) {
+	printk(KERN_INFO "Loading DFS Traverse Module...\n");
+	dfs(&init_task);
+	return 0;
+}
+
+void dfs_traverse_exit(void) {
+	printk(KERN_INFO "Removing DFS Traverse Module...\n");
+}
+
+module_init(dfs_traverse_init);
+module_exit(dfs_traverse_exit);
+
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Beyza-Kerem");
-MODULE_DESCRIPTION("Process Tree DFS-BFS");
+MODULE_DESCRIPTION("Process Tree DFS");
