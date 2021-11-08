@@ -733,22 +733,53 @@ int kerem_awesome_command(struct command_t *command) {
 	}
 }
 
-/* In this game, you will specify two argument: seconds and upper limit
- * You will try to guess the randomly generated number in a certain amount of time.
- * If you type 1, you will have 12 seconds, if you type 2, you will have 7 seconds.
- * Upper limit is for the random generator, you can define the range of the number. */
+/* In this method, you will specify one argument: seconds
+ * You will set a countdown timer to wake you up by playing a song.
+ */
 
 // You should use beyzaw command to run this method 
 int beyza_awesome_command(struct command_t *command) {
-	if(command->arg_count != 2) {
-		perror("The player did not specify enough argument to play the game!\n");
+	if(command->arg_count != 1) {
+		perror("The player did not specify enough argument to set the timer!\n");
 		return -1;
 	}
 
-	printf("This is a mini game that can be played on terminal.\n");
 	int seconds = 0;
+	seconds = atoi(command->args[0]);
+	
+	char music[256];
+	strcpy(music, "rhytmbox-client --play-uri=");
+	char cwd[256];
+	getcwd(cwd, sizeof(cwd));
 
-	if(strcmp(command->args[0], "1") == 0) {
+	strcat(music, cwd);
+	strcat(music, "The_Muffin_Song.mp3");
+	//printf("%s\n", music); 
+	
+	time_t t;
+	struct tm *tm;
+
+	tm = localtime(&t);
+	int s = seconds;
+	
+	while(seconds > 0) {
+		tm->tm_sec = s;
+		tm->tm_min = s/60;
+		tm->tm_hour = s/3600;
+
+		mktime(tm);
+
+		printf("%02d:%02d:%02d\n", tm->tm_hour, tm->tm_min, tm->tm_sec);
+		s--;
+		seconds--;
+		waitSec(1);
+	}
+	
+	system(music);
+	
+	return SUCCESS;
+
+	/*if(strcmp(command->args[0], "1") == 0) {
 		seconds = 12;
 		printf("You have %d seconds! Go!\n", seconds);
 	} else if (strcmp(command->args[0], "2") == 0) {
@@ -757,67 +788,8 @@ int beyza_awesome_command(struct command_t *command) {
 	} else {
 		perror("You selected an invalid difficulty option. Please select 1 or 2!\n");
 		return -1;
-	}
-
-	char music[256];
-	strcpy(music, "rhytmbox-client --play-uri=");
-	char cwd[256];
-	getcwd(cwd, sizeof(cwd));
-
-	strcat(music, cwd);
-	strcat(music, "The_Muffin_Song.mp3");
-	printf("%s\n", music); 	
-
-	time_t t;
-	struct tm *tm;
-
-	tm = localtime(&t);
-	int s = seconds;
-
-	int N = atoi(command->args[1]);
-	int number = rand() % N;
-	int guess = 0;
-	int chance = 5;
-
-	/*while(chance >0) {
-		scanf("%d", &guess);
-
-		if (guess > number) {
-			printf("Lower!\n");
-			chance--;
-		} else if (guess < number) {
-			printf("Higher!\n");
-			chance--;
-		} else {
-			printf("Coorect!\n");
-			//system(music);
-			return SUCCESS;
-		}
 	}*/
 
-	while(seconds > 0) {
-		tm->tm_sec = s;
-		tm->tm_min = s/60;
-		tm->tm_hour = s/3600;
-
-		mktime(tm);
-
-		/*scanf("%d", &guess);
-
-		if(guess > number) {
-			printf("Lower!\n");
-		} else if (guess < number) {
-			printf("Higher!\n");
-		} else {
-			printf("Correct!\n");
-			return SUCCESS;
-		}*/
-
-		printf("%02d:%02d:%02d\n", tm->tm_hour, tm->tm_min, tm->tm_sec);
-		s--;
-		seconds--;
-		waitSec(1);
-	}
 
 	/*signal(SIGALRM, sig_handler);
 	alarm(seconds);
@@ -832,8 +804,6 @@ int beyza_awesome_command(struct command_t *command) {
 		printf("Correct!\n");
 		return SUCCESS;
 	}*/
-
-	return SUCCESS;
 
 }
 
