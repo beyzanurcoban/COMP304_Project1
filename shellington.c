@@ -748,13 +748,13 @@ int beyza_awesome_command(struct command_t *command) {
 	seconds = atoi(command->args[0]);
 	
 	char music[256];
-	strcpy(music, "rhytmbox-client --play-uri=");
+	strcpy(music, "rhythmbox-client --play-uri=");
 	char cwd[256];
 	getcwd(cwd, sizeof(cwd));
 
 	strcat(music, cwd);
-	strcat(music, "The_Muffin_Song.mp3");
-	//printf("%s\n", music); 
+	strcat(music, "/The_Muffin_Song.mp3");
+	printf("%s\n", music); 
 	
 	time_t t;
 	struct tm *tm;
