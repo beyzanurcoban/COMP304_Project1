@@ -710,15 +710,15 @@ int deleteBookmark(int key) {
 /*
  * Call this function by "kerem".
  * Supply two arguments.
- * 1. plane, streetsign, or protester
- * 2. string of max. 20 characters
+ * 1. plane, siren, or protester
+ * 2. string of max. 20 characters (continuous, no spaces)
  * Enjoy!
  */
 int kerem_awesome_command(struct command_t *command) {
 	if(command->arg_count == 2) {
 		
-		char sign_message[20];
-		strncpy(command->args[1], sign_message);
+		char sign_message[21];
+		strcpy(sign_message, command->args[1]);
 		
 		if(strcmp(command->args[0], "plane") == 0) {
 			// ASCII animation of a banner on a plane
@@ -784,8 +784,8 @@ int kerem_awesome_command(struct command_t *command) {
 			return 1;
 		}
 	
-		if(strcmp(command->args[0], "streetsign") == 0) {
-			// ASCII animation of a one-line streetsign
+		if(strcmp(command->args[0], "siren") == 0) {
+			// ASCII animation of a one-line police siren
 			printf("\n");
 			int i;
 			for(i=0; i<60; i++) {
