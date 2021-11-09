@@ -791,9 +791,9 @@ int kerem_awesome_command(struct command_t *command) {
 			int i;
 			for(i=0; i<60; i++) {
 				system("clear");
-				if(i%4==0) printf(".uU\t%s\tUu.", sign_message);
-				if(i%4==1 || i%4==3) printf("uUu\t%s\tuUu", sign_message);
-				if(i%4==2) printf("Uu.\t%s\t.uU", sign_message);
+				if(i%4==0) printf(".uU    %s    Uu.", sign_message);
+				if(i%4==1 || i%4==3) printf("uUu    %s    uUu", sign_message);
+				if(i%4==2) printf("Uu.    %s    .uU", sign_message);
 				
 				system("sleep .25");
 			}
