@@ -812,24 +812,24 @@ int kerem_awesome_command(struct command_t *command) {
 				system("clear");
 				if(i%4==0 || i%4==2) {
 					printf("    -+osssssssssssssssssssssssssso+-    \n  -do-`                          `-od-  \n");
-					printf(" `N:"); for(j=0; j<left_space; j++) printf(" ");
+					printf(" `N:      "); for(j=0; j<left_space; j++) printf(" ");
 					printf("%s", sign_message);
-					for(j=0; j<right_space; j++) printf(" "); printf(":N` \n");
+					for(j=0; j<right_space; j++) printf(" "); printf("      :N` \n");
 					printf("  mo                                od  \n  `sho+//////////////////////////+ohs`  \n    sN                            Ns     \n     +m-       `oo+::+oo`       -m+      \n      :N:     -h        h-     :N:       \n       -N+    y   0  0   y    +N-        \n        .ms   +s        s+   sm.         \n         `hy   +s      s+   yh`          \n           o:    -++++-    :o            \n");
 				}
 				if(i%4==1) {
 					printf("     -+osssssssssssssssssssssssssso+-    \n   -do-`                          `-od-  \n");
-					printf("  `N:"); for(j=0; j<left_space; j++) printf(" ");
+					printf("  `N:      "); for(j=0; j<left_space; j++) printf(" ");
 					printf("%s", sign_message);
-					for(j=0; j<right_space; j++) printf(" "); printf(":N` \n");
-					printf("   mo                                od  \n   `sho+//////////////////////////+ohs`  \n     sN                            Ns     \n      +m-      `oo+::+oo`        -m+      \n       :N:    -h        h-      :N:       \n        -N+   y    0  0   y    +N-        \n         .ms  +s        s+    sm.         \n          `hy  +s      s+    yh`          \n            o:   -++++-     :o            \n");
+					for(j=0; j<right_space; j++) printf(" "); printf("      :N` \n");
+					printf("   mo                                od  \n   `sho+//////////////////////////+ohs`  \n     sN                            Ns     \n      +m-      `oo+::+oo`        -m+      \n       :N:    -h        h-      :N:       \n        -N+   y    0  0  y     +N-        \n         .ms  +s        s+    sm.         \n          `hy  +s      s+    yh`          \n            o:   -++++-     :o            \n");
 				}
 				if(i%4==3) {
-					printf("   -+osssssssssssssssssssssssssso+-    \n  -do-`                          `-od-  \n");
-					printf("`N:"); for(j=0; j<left_space; j++) printf(" ");
+					printf("   -+osssssssssssssssssssssssssso+-    \n -do-`                          `-od-  \n");
+					printf("`N:      "); for(j=0; j<left_space; j++) printf(" ");
 					printf("%s", sign_message);
-					for(j=0; j<right_space; j++) printf(" "); printf(":N` \n");
-					printf(" mo                                od  \n `sho+//////////////////////////+ohs`  \n   sN                            Ns     \n    +m-        `oo+::+oo`      -m+      \n     :N:      -h        h-    :N:       \n      -N+     y  0  0   y    +N-        \n       .ms    +s        s+  sm.         \n        `hy    +s      s+  yh`          \n          o:     -++++-   :o            \n");
+					for(j=0; j<right_space; j++) printf(" "); printf("      :N` \n");
+					printf(" mo                                od  \n `sho+//////////////////////////+ohs`  \n   sN                            Ns     \n    +m-        `oo+::+oo`      -m+      \n     :N:      -h        h-    :N:       \n      -N+     y  0  0    y   +N-        \n       .ms    +s        s+  sm.         \n        `hy    +s      s+  yh`          \n          o:     -++++-   :o            \n");
 				}
 				
 				system("sleep .5");
