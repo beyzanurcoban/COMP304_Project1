@@ -11,6 +11,7 @@
 const char * sysname = "shellington";
 
 #define PATH_LEN  2048
+#define clear() printf("\033[H\033[J")	// For clearing terminal
 char short_cmm_list[PATH_LEN];
 
 // Bookmark node structure (Linked List)
@@ -393,6 +394,11 @@ int process_command(struct command_t *command)
 		beyza_awesome_command(command);
 		return SUCCESS;
 	}
+	
+	if (strcmp(command->name, "kerem") == 0) {
+		kerem_awesome_command(command);
+		return SUCCESS;
+	}
 
 	pid_t pid=fork();
 	if (pid==0) // child
@@ -701,29 +707,135 @@ int deleteBookmark(int key) {
 	}
 } */
 
+
+/*
+ * Call this function by "kerem".
+ * Supply two arguments.
+ * 1. plane, streetsign, or protester
+ * 2. string of max. 20 characters
+ * Enjoy!
+ */
 int kerem_awesome_command(struct command_t *command) {
 	if(command->arg_count == 2) {
 		
-		char sign[20];
-		strcpy(command->args[1], sign);
+		char sign_message[20];
+		strcpy(command->args[1], sign_message);
 		
 		if(strcmp(command->args[0], "plane") == 0) {
 			// ASCII animation of a banner on a plane
-			int i;
+			int left_space = ((20 - strlen(sign_message)) / 2);
+			int right_space = 20 - strlen(sign_message) - left_space;
+			
+			print("\n");
+			int i, j;
 			for(i=0; i<60; i++) {
+				clear();
+				if(i%4==0 || i%4==2) {
+					for(j=0; j<i; j++) print(" "); print("                                                   -:++++:.              \n");
+					for(j=0; j<i; j++) print(" "); print("                                    /y/         `oo:.   `./oo`           \n");
+					for(j=0; j<i; j++) print(" "); print("                                    o+-oo-     .h.          -h`          \n");
+					for(j=0; j<i; j++) print(" "); print("OXXXXXXXXXXXXXXXXXXXXXXXXO          o+   /h    h:            +s-`        \n");
+					for(j=0; j<i; j++) print(" "); print("X                        X          o+-oo+:----h:            +h/+ss.     \n");
+					for(j=0; j<i; j++) print(" "); print("X                        X          ods        .h`          .ms   `h/  sM\n");
+					for(j=0; j<i; j++) print(" "); print("X  ");
+					for(j=0; j<left_space; j++) print(" "); print("%s", sign_message); for(j=0; j<right_space; j++) print(" ");
+					print("  X==========oh          `oo:`    .:oo/s     m- yM\n");
+					for(j=0; j<i; j++) print(" "); print("X                        X          o+             -/++++/-  :s     ydhmM\n");
+					for(j=0; j<i; j++) print(" "); print("X                        X          :s                       :s     d- sM\n");
+					for(j=0; j<i; j++) print(" "); print("OXXXXXXXXXXXXXXXXXXXXXXXXO           y/                      :s    oy  sM\n");
+					for(j=0; j<i; j++) print(" "); print("                                      +s/.                   :s`-+y/     \n");
+					for(j=0; j<i; j++) print(" "); print("                                        \:++++++++++++++++++++o+:/       \n");
+				}
+				if(i%4==1) {
+					for(j=0; j<i; j++) print(" "); print("                                                   -:++++:.              \n");
+					for(j=0; j<i; j++) print(" "); print("                                    /y/         `oo:.   `./oo`           \n");
+					for(j=0; j<i; j++) print(" "); print("                                    o+-oo-     .h.          -h`          \n");
+					for(j=0; j<i; j++) print(" "); print("OXXXXXXXXXXXXXXXXXXXXXXXXO          o+   /h    h:            +s-`        \n");
+					for(j=0; j<i; j++) print(" "); print("X                        X          o+-oo+:----h:            +h/+ss.   sM\n");
+					for(j=0; j<i; j++) print(" "); print("X                        X          ods        .h`          .ms   `h/  sM\n");
+					for(j=0; j<i; j++) print(" "); print("X  ");
+					for(j=0; j<left_space; j++) print(" "); print("%s", sign_message); for(j=0; j<right_space; j++) print(" ");
+					print("  X==========oh          `oo:`    .:oo/s     m- yM\n");
+					for(j=0; j<i; j++) print(" "); print("X                        X          o+             -/++++/-  :s     ydhmM\n");
+					for(j=0; j<i; j++) print(" "); print("X                        X          :s                       :s     d- sM\n");
+					for(j=0; j<i; j++) print(" "); print("OXXXXXXXXXXXXXXXXXXXXXXXXO           y/                      :s    oy  sM\n");
+					for(j=0; j<i; j++) print(" "); print("                                      +s/.                   :s`-+y/   sM\n");
+					for(j=0; j<i; j++) print(" "); print("                                        \:++++++++++++++++++++o+:/       \n");
 				
+				}
+				if(i%4==3) {
+					for(j=0; j<i; j++) print(" "); print("                                                   -:++++:.              \n");
+					for(j=0; j<i; j++) print(" "); print("                                    /y/         `oo:.   `./oo`           \n");
+					for(j=0; j<i; j++) print(" "); print("                                    o+-oo-     .h.          -h`          \n");
+					for(j=0; j<i; j++) print(" "); print("OXXXXXXXXXXXXXXXXXXXXXXXXO          o+   /h    h:            +s-`        \n");
+					for(j=0; j<i; j++) print(" "); print("X                        X          o+-oo+:----h:            +h/+ss.     \n");
+					for(j=0; j<i; j++) print(" "); print("X                        X          ods        .h`          .ms   `h/    \n");
+					for(j=0; j<i; j++) print(" "); print("X  ");
+					for(j=0; j<left_space; j++) print(" "); print("%s", sign_message); for(j=0; j<right_space; j++) print(" ");
+					print("  X==========oh          `oo:`    .:oo/s     m- yM\n");
+					for(j=0; j<i; j++) print(" "); print("X                        X          o+             -/++++/-  :s     ydhmM\n");
+					for(j=0; j<i; j++) print(" "); print("X                        X          :s                       :s     d- sM\n");
+					for(j=0; j<i; j++) print(" "); print("OXXXXXXXXXXXXXXXXXXXXXXXXO           y/                      :s    oy    \n");
+					for(j=0; j<i; j++) print(" "); print("                                      +s/.                   :s`-+y/     \n");
+					for(j=0; j<i; j++) print(" "); print("                                        \:++++++++++++++++++++o+:/       \n");
 				
-				system("sleep .5");
+				}
+				system("sleep .25");
 			}
 			return 1;
 		}
 	
 		if(strcmp(command->args[0], "streetsign") == 0) {
-			// ASCII animation of a streetsign
+			// ASCII animation of a one-line streetsign
+			print("\n");
+			int i;
+			for(i=0; i<60; i++) {
+				if(i%4==0) print("O	%s	O\r", sign_message);
+				if(i%4==1) print("<	%s	<\r", sign_message);
+				if(i%4==2) print("O	%s	O\r", sign_message);
+				if(i%4==3) print(">	%s	>\r", sign_message);
+				
+				system("sleep .25");
+			}
+			print("\n");
+			return 1;
 		}
 		
 		if(strcmp(command->args[0], "protester") == 0) {
 			// ASCII animation of a protester holding a sign
+			int left_space = ((20 - strlen(sign_message)) / 2);
+			int right_space = 20 - strlen(sign_message) - left_space;
+			
+			print("\n");
+			int i, j;
+			for(i=0; i<30; i++) {
+				clear();
+				if(i%4==0 || i%4==2) {
+					print("    -+osssssssssssssssssssssssssso+-    \n  -do-`                          `-od-  \n");
+					print(" `N:"); for(j=0; j<left_space; j++) print(" ");
+					print("%s", sign_message);
+					for(j=0; j<right_space; j++) print(" "); print(":N` \n");
+					print("  mo                                od  \n  `sho+//////////////////////////+ohs`  \n    sN                            Ns     \n     +m-       `oo+::+oo`       -m+      \n      :N:     -h        h-     :N:       \n       -N+    y   0  0   y    +N-        \n        .ms   +s        s+   sm.         \n         `hy   +s      s+   yh`          \n           o:    -++++-    :o            \n");
+				}
+				if(i%4==1) {
+					print("     -+osssssssssssssssssssssssssso+-    \n   -do-`                          `-od-  \n");
+					print("  `N:"); for(j=0; j<left_space; j++) print(" ");
+					print("%s", sign_message);
+					for(j=0; j<right_space; j++) print(" "); print(":N` \n");
+					print("   mo                                od  \n   `sho+//////////////////////////+ohs`  \n     sN                            Ns     \n      +m-      `oo+::+oo`        -m+      \n       :N:    -h        h-      :N:       \n        -N+   y    0  0   y    +N-        \n         .ms  +s        s+    sm.         \n          `hy  +s      s+    yh`          \n            o:   -++++-     :o            \n");
+				}
+				if(i%4==3) {
+					print("   -+osssssssssssssssssssssssssso+-    \n  -do-`                          `-od-  \n");
+					print("`N:"); for(j=0; j<left_space; j++) print(" ");
+					print("%s", sign_message);
+					for(j=0; j<right_space; j++) print(" "); print(":N` \n");
+					print(" mo                                od  \n `sho+//////////////////////////+ohs`  \n   sN                            Ns     \n    +m-        `oo+::+oo`      -m+      \n     :N:      -h        h-    :N:       \n      -N+     y  0  0   y    +N-        \n       .ms    +s        s+  sm.         \n        `hy    +s      s+  yh`          \n          o:     -++++-   :o            \n");
+				}
+				
+				system("sleep .5");
+			}
+			print("\n");
+			return 1;
 		}
 	}
 	
