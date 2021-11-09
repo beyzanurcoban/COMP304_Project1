@@ -744,7 +744,7 @@ int kerem_awesome_command(struct command_t *command) {
 					for(j=0; j<i; j++) printf(" "); printf("X                        X          :s                       :s     d- sM\n");
 					for(j=0; j<i; j++) printf(" "); printf("OXXXXXXXXXXXXXXXXXXXXXXXXO           y/                      :s    oy  sM\n");
 					for(j=0; j<i; j++) printf(" "); printf("                                      +s/.                   :s`-+y/     \n");
-					for(j=0; j<i; j++) printf(" "); printf("                                        \:++++++++++++++++++++o+:/       \n");
+					for(j=0; j<i; j++) printf(" "); printf("                                        l:++++++++++++++++++++o+:/       \n");
 				}
 				if(i%4==1) {
 					for(j=0; j<i; j++) printf(" "); printf("                                                   -:++++:.              \n");
@@ -760,7 +760,7 @@ int kerem_awesome_command(struct command_t *command) {
 					for(j=0; j<i; j++) printf(" "); printf("X                        X          :s                       :s     d- sM\n");
 					for(j=0; j<i; j++) printf(" "); printf("OXXXXXXXXXXXXXXXXXXXXXXXXO           y/                      :s    oy  sM\n");
 					for(j=0; j<i; j++) printf(" "); printf("                                      +s/.                   :s`-+y/   sM\n");
-					for(j=0; j<i; j++) printf(" "); printf("                                        \:++++++++++++++++++++o+:/       \n");
+					for(j=0; j<i; j++) printf(" "); printf("                                        l:++++++++++++++++++++o+:/       \n");
 				
 				}
 				if(i%4==3) {
@@ -777,7 +777,7 @@ int kerem_awesome_command(struct command_t *command) {
 					for(j=0; j<i; j++) printf(" "); printf("X                        X          :s                       :s     d- sM\n");
 					for(j=0; j<i; j++) printf(" "); printf("OXXXXXXXXXXXXXXXXXXXXXXXXO           y/                      :s    oy    \n");
 					for(j=0; j<i; j++) printf(" "); printf("                                      +s/.                   :s`-+y/     \n");
-					for(j=0; j<i; j++) printf(" "); printf("                                        \:++++++++++++++++++++o+:/       \n");
+					for(j=0; j<i; j++) printf(" "); printf("                                        l:++++++++++++++++++++o+:/       \n");
 				
 				}
 				system("sleep .25");
