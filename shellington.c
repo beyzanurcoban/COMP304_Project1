@@ -11,7 +11,6 @@
 const char * sysname = "shellington";
 
 #define PATH_LEN  2048
-#define clear() printf("\033[H\033[J")	// For clearing terminal
 char short_cmm_list[PATH_LEN];
 
 // Bookmark node structure (Linked List)
@@ -719,7 +718,7 @@ int kerem_awesome_command(struct command_t *command) {
 	if(command->arg_count == 2) {
 		
 		char sign_message[20];
-		strcpy(command->args[1], sign_message);
+		strncpy(command->args[1], sign_message);
 		
 		if(strcmp(command->args[0], "plane") == 0) {
 			// ASCII animation of a banner on a plane
@@ -791,9 +790,9 @@ int kerem_awesome_command(struct command_t *command) {
 			int i;
 			for(i=0; i<60; i++) {
 				system("clear");
-				if(i%4==0) printf(".uU    %s    Uu.", sign_message);
-				if(i%4==1 || i%4==3) printf("uUu    %s    uUu", sign_message);
-				if(i%4==2) printf("Uu.    %s    .uU", sign_message);
+				if(i%4==0) printf(".uU    %s    Uu.\n", sign_message);
+				if(i%4==1 || i%4==3) printf("uUu    %s    uUu\n", sign_message);
+				if(i%4==2) printf("Uu.    %s    .uU\n", sign_message);
 				
 				system("sleep .25");
 			}
