@@ -779,7 +779,7 @@ int kerem_awesome_command(struct command_t *command) {
 					for(j=0; j<i; j++) printf(" "); printf("                                        l:++++++++++++++++++++o+:/       \n");
 				
 				}
-				system("sleep .25");
+				system("sleep .125");
 			}
 			return 1;
 		}
@@ -790,11 +790,11 @@ int kerem_awesome_command(struct command_t *command) {
 			int i;
 			for(i=0; i<60; i++) {
 				system("clear");
-				if(i%4==0) printf(".uU    %s    Uu.\n", sign_message);
-				if(i%4==1 || i%4==3) printf("uUu    %s    uUu\n", sign_message);
-				if(i%4==2) printf("Uu.    %s    .uU\n", sign_message);
+				if(i%4==0) printf(".uU    %s    Uu.\n\n", sign_message);
+				if(i%4==1 || i%4==3) printf("uUu    %s    uUu\n\n", sign_message);
+				if(i%4==2) printf("Uu.    %s    .uU\n\n", sign_message);
 				
-				system("sleep .25");
+				system("sleep .125");
 			}
 			printf("\n");
 			return 1;
@@ -807,7 +807,7 @@ int kerem_awesome_command(struct command_t *command) {
 			
 			printf("\n");
 			int i, j;
-			for(i=0; i<30; i++) {
+			for(i=0; i<16; i++) {
 				system("clear");
 				if(i%4==0 || i%4==2) {
 					printf("    -+osssssssssssssssssssssssssso+-    \n  -do-`                          `-od-  \n");
