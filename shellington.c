@@ -13,13 +13,6 @@ const char * sysname = "shellington";
 #define PATH_LEN  2048
 char short_cmm_list[PATH_LEN];
 
-// Bookmark node structure (Linked List)
-struct bmnode {
-	char command[500];
-	int key;
-	struct bmnode *next;
-};
-
 struct bmnode *bmhead = NULL;
 struct bmnode *bmcurrent = NULL;
 
@@ -36,6 +29,13 @@ struct command_t {
 	char **args;
 	char *redirects[3]; // in/out redirection
 	struct command_t *next; // for piping
+};
+
+// Bookmark Node Structure (LinkedList)
+struct bmnode {
+	struct command_t *command;
+	int key;
+	struct bmnode *next;
 };
 /**
  * Prints a command struct
@@ -347,13 +347,13 @@ int crobtab(struct command_t *command, char *file_name);
 void remindme_command(struct command_t *command);
 //int short_command(struct command_t *command);
 //void is_key_exist(char *key);
-//int bookmark_command(struct command_t *command);
-//void printAllBookmarks();
-//bool bookmarkIsEmpty();
-//int bookmarkLength();
-//struct bmnode* findBookmark(int key);
-//void addBookmark(char *command);
-//int deleteBookmark(int key);
+int bookmark_command(struct command_t *command);
+void printAllBookmarks();
+bool bookmarkIsEmpty();
+int bookmarkLength();
+struct bmnode* findBookmark(int key);
+void addBookmark(struct command_t *command);
+int deleteBookmark(int key);
 int kerem_awesome_command(struct command_t *command);
 int beyza_awesome_command(struct command_t *command);
 void sig_handler(int signum);
@@ -388,6 +388,11 @@ int process_command(struct command_t *command)
 		short_command(command);
 		return SUCCESS;
 	}*/
+
+	if(strcmp(command->name, "bookmark") == 0) {
+		bookmark_command(command);
+		return SUCCESS;
+	}
 
 	if (strcmp(command->name, "beyzaw") == 0) {
 		beyza_awesome_command(command);
@@ -585,19 +590,19 @@ void is_key_exist(char *key) {
 
 } */
 
-/*int bookmark_command(struct command_t *command) {
+int bookmark_command(struct command_t *command) {
 	if(command->arg_count == 2) {
 		
 		if(strcmp(command->args[0], "-i") == 0) {
 			// Execute command at index
-			int bm_index = command->args[1];
+			int bm_index = atoi(command->args[1]);
 			
 			process_command(findBookmark(bm_index)->command);
 		}
 	
 		if(strcmp(command->args[0], "-d") == 0) {
 			// Delete bookmark at index
-			int bm_index = command->args[1];
+			int bm_index = atoi(command->args[1]);
 			
 			deleteBookmark(bm_index);
 		}
@@ -624,11 +629,13 @@ void is_key_exist(char *key) {
 
 void printAllBookmarks() {
 	struct bmnode *ptr = bmhead;
-	printf("\nCurrent Bookmarks");
+	printf("\nCurrent Bookmarks\n");
 	
-	int i=0;
+	int i=0, j;
 	while(ptr != NULL) {
-		printf("\n\t %d %s", i, ptr->command);
+		printf("\t %d %s", i, ptr->command->name);
+		for(j=0; j<(ptr->command->arg_count); j++) printf(" %s", ptr->command->args[j]);
+		printf("\n");
 		i++;
 		ptr = ptr->next;
 	}
@@ -665,21 +672,20 @@ struct bmnode* findBookmark(int key) {
 	return bmcurrent;
 }
 
-void addBookmark(char *command) {
-	struct bmnode *new = struct (bmnode*) malloc(sizeof(struct bmnode));
+void addBookmark(struct command_t *command) {
+	struct bmnode *new = (struct bmnode*) malloc(sizeof(struct bmnode));
 	
 	struct bmnode *ptr = bmhead;
 	
 	int i=0;
 	while(ptr != NULL) {
-		printf("\n\t %d %s", i, ptr->command);
 		i++;
 		ptr = ptr->next;
 	}
 	
 	new->key = i;
 	new->next = NULL;
-	strcpy(new->command, command);
+	new->command = command;
 	
 	ptr->next = new;
 }
@@ -704,7 +710,7 @@ int deleteBookmark(int key) {
 	} else {
 		bmprevious->next = bmcurrent->next;
 	}
-} */
+}
 
 
 /*
@@ -731,9 +737,6 @@ int kerem_awesome_command(struct command_t *command) {
 				system("clear");
 				if(i%4==0 || i%4==2) {
 					for(j=0; j<i; j++) printf(" "); printf("                                                   -:++++:.              \n");
-					for(j=0; j<i; j++) printf(" "); printf("                                    /y/         `oo:.   `./oo`           \n");
-					for(j=0; j<i; j++) printf(" "); printf("                                    o+-oo-     .h.          -h`          \n");
-					for(j=0; j<i; j++) printf(" "); printf("OXXXXXXXXXXXXXXXXXXXXXXXXO          o+   /h    h:            +s-`        \n");
 					for(j=0; j<i; j++) printf(" "); printf("X                        X          o+-oo+:----h:            +h/+ss.     \n");
 					for(j=0; j<i; j++) printf(" "); printf("X                        X          ods        .h`          .ms   `h/  sM\n");
 					for(j=0; j<i; j++) printf(" "); printf("X  ");
@@ -927,3 +930,5 @@ void waitSec(int sec) {
 	clock_t ending = clock() + (sec * CLOCKS_PER_SEC);
 	while (clock() < ending) {}
 }
+#include <unistd.h>
+#include <unistd.h>
