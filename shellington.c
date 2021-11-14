@@ -356,8 +356,8 @@ void addBookmark(struct command_t *command);
 int deleteBookmark(int key);
 int kerem_awesome_command(struct command_t *command);
 int beyza_awesome_command(struct command_t *command);
-void sig_handler(int signum);
 void waitSec(int sec);
+int pstraverse(struct command_t *command);
 
 
 int process_command(struct command_t *command)
@@ -394,13 +394,18 @@ int process_command(struct command_t *command)
 		return SUCCESS;
 	}
 
-	if (strcmp(command->name, "beyzaw") == 0) {
+	if (strcmp(command->name, "beyza") == 0) {
 		beyza_awesome_command(command);
 		return SUCCESS;
 	}
 	
 	if (strcmp(command->name, "kerem") == 0) {
 		kerem_awesome_command(command);
+		return SUCCESS;
+	}
+
+	if (strcmp(command->name, "pstraverse") == 0) {
+		pstraverse(command);
 		return SUCCESS;
 	}
 
@@ -504,12 +509,12 @@ int crontab(struct command_t *command, char *file_name) {
 	//printf("%s\n", minute);
 	//printf("%s\n", message);
 	
-	char *notify_cmm = "export DISPLAY=:0.0 && /usr/bin/notify-send";
+	char *notify_cmm = "XDG_RUNTIME_DIR=/run/user/$(id -u) /usr/bin/notify-send";
 
 	int cmm_line_len = strlen(minute) + strlen(hour) + 3 + strlen(notify_cmm) + strlen(message) + 10;
 
 	char *cmm_line = (char *)malloc(sizeof(char) * cmm_line_len);
-	snprintf(cmm_line, cmm_line_len, "%s %s %s %s %s %s %s", minute, hour, "*", "*", "*", notify_cmm, message);
+	snprintf(cmm_line, cmm_line_len, "%s %s %s %s %s %s \"%s\"", minute, hour, "*", "*", "*", notify_cmm, message);
 
 	FILE *file;
 	file = fopen(file_name, "w");
@@ -847,14 +852,15 @@ int kerem_awesome_command(struct command_t *command) {
 	}
 }
 
-/* In this method, you will specify one argument: seconds
- * You will set a countdown timer to wake you up by playing a song.
+/* Call this command by "beyza"
+ * Specify 1 argument: seconds
+ * That's it! You set a timer to warn you.
+ * When it's time to eat a muffin, the system will warn you
+ * with a cute song
  */
-
-// You should use beyzaw command to run this method 
 int beyza_awesome_command(struct command_t *command) {
 	if(command->arg_count != 1) {
-		perror("The player did not specify enough argument to set the timer!\n");
+		perror("The user did not specify enough argument to set the timer!\n");
 		return -1;
 	}
 
@@ -893,42 +899,25 @@ int beyza_awesome_command(struct command_t *command) {
 	
 	return SUCCESS;
 
-	/*if(strcmp(command->args[0], "1") == 0) {
-		seconds = 12;
-		printf("You have %d seconds! Go!\n", seconds);
-	} else if (strcmp(command->args[0], "2") == 0) {
-		seconds = 7;
-		printf("You have %d seconds! Go!\n", seconds);
-	} else {
-		perror("You selected an invalid difficulty option. Please select 1 or 2!\n");
-		return -1;
-	}*/
-
-
-	/*signal(SIGALRM, sig_handler);
-	alarm(seconds);
-
-	scanf("%d", &guess);
-
-	if(guess > number) {
-		printf("Lower!\n");
-	} else if (guess < number) {
-		printf("Higher!\n");
-	} else {
-		printf("Correct!\n");
-		return SUCCESS;
-	}*/
-
-}
-
-void sig_handler(int signum) {
-	printf("Timeout! You Lose!\n");
-	exit(0);
 }	
 
 void waitSec(int sec) {
 	clock_t ending = clock() + (sec * CLOCKS_PER_SEC);
 	while (clock() < ending) {}
 }
-#include <unistd.h>
-#include <unistd.h>
+
+int pstraverse(struct command_t *command) {
+	if(command->arg_count !=2) {
+		perror("The user did not enter the arguments correctly. Please provide a PID and search method -d or -b.\n");
+		return -1;	
+	}
+
+	char*  mod_dfs[] = {"dfs_module.ko"};
+
+	if(strcmp(command->args[1], "-d") == 0) {
+		execvp("sudo insmod",mod_dfs);
+		execvp("sudo rmmod", mod_dfs);
+	}
+
+	return SUCCESS;
+}
