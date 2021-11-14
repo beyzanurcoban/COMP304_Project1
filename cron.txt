@@ -1,1 +1,1 @@
-01 18 * * * export DISPLAY=:0.0 && /usr/bin/notify-send heyyo
+11 23 * * * XDG_RUNTIME_DIR=/run/user/$(id -u) /usr/bin/notify-send "heyyo"
