@@ -737,6 +737,9 @@ int kerem_awesome_command(struct command_t *command) {
 				system("clear");
 				if(i%4==0 || i%4==2) {
 					for(j=0; j<i; j++) printf(" "); printf("                                                   -:++++:.              \n");
+                                        for(j=0; j<i; j++) printf(" "); printf("                                    /y/         `oo:.   `./oo`           \n");
+                                        for(j=0; j<i; j++) printf(" "); printf("                                    o+-oo-     .h.          -h`          \n");
+                                        for(j=0; j<i; j++) printf(" "); printf("OXXXXXXXXXXXXXXXXXXXXXXXXO          o+   /h    h:            +s-`        \n");
 					for(j=0; j<i; j++) printf(" "); printf("X                        X          o+-oo+:----h:            +h/+ss.     \n");
 					for(j=0; j<i; j++) printf(" "); printf("X                        X          ods        .h`          .ms   `h/  sM\n");
 					for(j=0; j<i; j++) printf(" "); printf("X  ");
