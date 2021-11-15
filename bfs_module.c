@@ -11,7 +11,7 @@ void bfs(struct task_struct *task) {
 	
 	    printk(KERN_INFO "Name: %s, Process ID: %d\n", task->comm, task->pid);
 
-	   /* if (&task->sibling == NULL) {
+	   if (&task->sibling == NULL) {
 		    printk(KERN_INFO "task has no sibling\n");
 		    next = list_entry(&task->children, struct task_struct, sibling);
 	 	    bfs(next);
@@ -24,7 +24,7 @@ void bfs(struct task_struct *task) {
 			    printk(KERN_INFO "%s\n", next->comm);
 		            bfs(next);
 	    	    }
-	    }*/
+	    }
 
 }
 

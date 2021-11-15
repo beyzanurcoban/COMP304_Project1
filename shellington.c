@@ -1060,17 +1060,22 @@ int pstraverse(struct command_t *command) {
 		return -1;	
 	}
 
-	int root_pid = atoi(command->args[1]);
-
-	char* mod_dfs[] = {"dfs_module.ko"};
-	char* mod_bfs[] = {"bfs_module.ko"};
 
 	if(strcmp(command->args[1], "-d") == 0) {
-		execvp("sudo insmod",mod_dfs);
-		execvp("sudo rmmod", mod_dfs);
+		char cmm[60] = "sudo insmod dfs_module.ko PID=";
+		strcat(cmm, command->args[0]);
+		char *buf = cmm;
+		printf("DFS Kernel Module Loaded...\n");
+		system(buf);
+		printf("Writing the process tree...\n");
+		printf("DFS Kernel Module Removed...\n");
+		system("sudo rmmod dfs_module.ko");
 	} else if (strcmp(command->args[1], "-b") == 0) {
-		execvp("sudo insmod",mod_bfs);
-		execvp("sudo rmmod",mod_bfs);
+		printf("BFS Kernel Module Loaded...\n");
+		printf("We couldn't complete this part, sorry :(\n");
+	} else {
+		perror("You provided wrong arguments!\n");
+		return -1;
 	}
 
 

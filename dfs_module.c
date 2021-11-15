@@ -3,6 +3,17 @@
 #include <linux/sched.h>
 #include <linux/sched/task.h>
 #include <linux/module.h>
+#include <linux/moduleparam.h>
+#include <linux/stat.h>
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Beyza-Kerem");
+MODULE_DESCRIPTION("Process Tree DFS");
+
+static int PID = 0;
+module_param(PID, int, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+MODULE_PARM_DESC(PID, "An integer");
+
 
 // DFS over a process tree
 void dfs(struct task_struct *task) {
@@ -19,7 +30,8 @@ void dfs(struct task_struct *task) {
 
 int dfs_traverse_init(void) {
 	printk(KERN_INFO "Loading DFS Traverse Module...\n");
-	dfs(&init_task);
+	struct task_struct *first_task = get_pid_task(find_get_pid(PID), PIDTYPE_PID);
+	dfs(first_task);
 	return 0;
 }
 
@@ -30,7 +42,3 @@ void dfs_traverse_exit(void) {
 module_init(dfs_traverse_init);
 module_exit(dfs_traverse_exit);
 
-
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Beyza-Kerem");
-MODULE_DESCRIPTION("Process Tree DFS");
