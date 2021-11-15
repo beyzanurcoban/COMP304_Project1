@@ -124,11 +124,9 @@ int parse_command(char *buf, struct command_t *command)
 		strncat(ar, token, 1);
 
 		if (strcmp(ar, "\"") == 0) {
-			printf("Enter bookmark if\n");
 			int arg_i = 0;
                 	command->args=(char **)malloc(sizeof(char *)*2);
                 	command->args[arg_i]=(char *)malloc(strlen(token)+1);
-               		printf("command arg0 is %s\n", token);
                 	strcpy(command->args[arg_i], token);
                 	command->arg_count = 1;
                 	return SUCCESS;
@@ -380,11 +378,11 @@ void remindme_command(struct command_t *command);
 //void is_key_exist(char *key);
 int bookmark_command(struct command_t *command);
 void printAllBookmarks();
-//bool bookmarkIsEmpty();
+bool bookmarkIsEmpty();
 int bookmarkLength();
-//struct bmnode* findBookmark(int key);
+struct bmnode* findBookmark(int key);
 void addBookmark(struct command_t *command);
-//int deleteBookmark(int key);
+int deleteBookmark(int key);
 int kerem_awesome_command(struct command_t *command);
 int beyza_awesome_command(struct command_t *command);
 void waitSec(int sec);
@@ -627,26 +625,6 @@ void is_key_exist(char *key) {
 } */
 
 int bookmark_command(struct command_t *command) {
-	/*if(command->arg_count == 2) {
-		
-		if(strcmp(command->args[0], "-i") == 0) {
-			// Execute command at index
-			int bm_index = atoi(command->args[1]);
-
-			if(bm_index < bookmarkLength()) {
-				process_command(findBookmark(bm_index)->command);
-			} else {
-				printf("\nIndex out of bounds\n");
-			}
-		}
-	
-		if(strcmp(command->args[0], "-d") == 0) {
-			// Delete bookmark at index
-			int bm_index = atoi(command->args[1]);
-			
-			deleteBookmark(bm_index);
-		}*/
-
 
 	if (command->arg_count == 1) {
 		if (strcmp(command->args[0], "-l") == 0) {
@@ -656,29 +634,43 @@ int bookmark_command(struct command_t *command) {
 		}
 
 	} else if (command->arg_count == 2) {
-		printf("Two arguments\n");
 		if (strcmp(command->args[0], "-d") == 0) {
 			int bm_index = atoi(command->args[1]);
 			int len = bookmarkLength();
-			printf("Bookmark list len: %d\n", len);
 
 			if(bm_index > len) {
 				perror("Index out of bound!\n");
 				return -1;
 			} else {
-				printf("delete index = %d\n",bm_index);
+				deleteBookmark(bm_index);
 			}
 		} else if (strcmp(command->args[0], "-i") == 0) {
 			int bm_index = atoi(command->args[1]);
 			int len = bookmarkLength();
-			printf("Bookmark list len: %d\n", len);
 
 			if(bm_index > len) { 
 				perror("Index out of bound!\n");
 				return -1;
 			} else {
-				printf("run index = %d\n", bm_index);
+				struct bmnode* bm = findBookmark(bm_index);
+				char *buf = bm->book;
+				system(buf);
+				/*struct command_t *comm = (struct command_t*)malloc(sizeof(struct command_t));
+
+				printf("Buffer = %s\n", buf);
+
+				char sub_buf[strlen(buf)-1];
+				memcpy(sub_buf, &buf[1], strlen(buf)-2);
+				sub_buf[strlen(buf)-2] = '\0';
+
+				printf("New Buffer = %s\n", sub_buf);
+				
+				parse_command(buf, comm);
+				printf("Command name = %s\n", comm->name);
+				printf("Command arg = %d\n", comm->arg_count);
+				process_command(comm);*/
 			}
+
 		} else {
 			perror("You provided wrong arguments to use Bookmark!\n");
 			return -1;
@@ -702,9 +694,10 @@ void printAllBookmarks() {
 	}
 }
 
-/*bool bookmarkIsEmpty() {
-	return bmhead == NULL;	
-}*/
+bool bookmarkIsEmpty() {
+	struct bmnode** head_ref = &bmhead;
+	return *head_ref == NULL;	
+}
 
 // Method that gives the number of saved bookmark commands
 int bookmarkLength() {
@@ -722,8 +715,9 @@ int bookmarkLength() {
 	return length;
 }
 
-/*struct bmnode* findBookmark(int key) {
-	struct bmnode* bmcurrent = bmhead;
+struct bmnode* findBookmark(int key) {
+	struct bmnode** head_ref = &bmhead;
+	struct bmnode* bmcurrent = *head_ref;
 	
 	if(bookmarkIsEmpty()) return NULL;
 	
@@ -736,7 +730,7 @@ int bookmarkLength() {
 	}
 	
 	return bmcurrent;
-}*/
+}
 
 // Method to add a new bookmark command at the end of the linked list structure
 void addBookmark(struct command_t *command) {
@@ -764,57 +758,40 @@ void addBookmark(struct command_t *command) {
 		ptr->next = new_node;
 	}
 	
-	/*int i=0;
-	if(ptr != NULL) {
-		i++;
-		//printf("Second iteration, arg is %s\n", ptr->book);
-		while(ptr->next != NULL) {
-			i++;
-			ptr = ptr->next;
-		}
-	}
-	
-	new_node->key = i;
-	printf("new node key is %d\n", new_node->key);
-	new_node->next = NULL;
-	new_node->book = bookm;
-	printf("new node arg is %s\n", new_node->book);
-
-	if(ptr == NULL) {
-		bmhead = (struct bmnode*) malloc(sizeof(struct bmnode));
-		bmhead = new_node;
-		printf("head node arg is %s\n", bmhead->book);
-	} else {
-		ptr->next = new_node;
-	}*/
-
-	
-	/*if(ptr != NULL) {
-		ptr->next = new;
-	}*/
 }
 
-/*int deleteBookmark(int key) {
-	struct bmnode* bmcurrent = bmhead;
+// Method to delete the desired bookmark with a given index
+int deleteBookmark(int key) {
+	struct bmnode** head_ref = &bmhead;
+
+	struct bmnode* bmcurrent = *head_ref;
 	struct bmnode* bmprevious = NULL;
 	
-	if(bmhead == NULL) return -1;
-	
-	while(bmcurrent->key != key) {
-		if(bmcurrent->next == NULL) {
-			return -1;
-		} else {
-			bmprevious = bmcurrent;
-			bmcurrent = bmcurrent->next;
-		}
+	if(bmcurrent == NULL) return -1;
+
+	// delete the first bookmark
+	if(bmcurrent != NULL && bmcurrent->key == key) {
+		*head_ref = bmcurrent->next;
+		free(bmcurrent);
+		return SUCCESS;
 	}
-	
-	if(bmcurrent == bmhead) {
-		bmhead = bmhead->next;
-	} else {
-		bmprevious->next = bmcurrent->next;
+
+	// iterate to find the desired key 
+	while(bmcurrent != NULL && bmcurrent->key != key) {
+		bmprevious = bmcurrent;
+		bmcurrent = bmcurrent->next;
 	}
-}*/
+
+	// if the key is not present in the list
+	if(bmcurrent == NULL){
+		return -1;
+	}
+
+	bmprevious->next = bmcurrent->next;
+	free(bmcurrent);
+	return SUCCESS;
+	
+}
 
 
 /*
