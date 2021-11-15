@@ -8,22 +8,14 @@
 #include <errno.h>
 #include <time.h>
 #include <signal.h>
+#include <linux/module.h>
 #include <sys/types.h>
 const char * sysname = "shellington";
 
 #define PATH_LEN  2048
 char short_cmm_list[PATH_LEN];
 
-
 #define MAP_SIZE  10
-
-#define ROOT_PID  0
-#define INSMOD_PATH "/sbin/insmod"
-
-// HEY USER! Please change the following paths according to your computer.
-// Thanks :)
-#define DFS_PATH    "/home/keremgirenes/Desktop/project1/COMP304_Project1/dfs_module.ko/"
-#define BFS_PATH    "/home/keremgirenes/Desktop/project1/COMP304_Project1/bfs_module.ko/"
 
 enum return_codes {
 	SUCCESS = 0,
@@ -1044,7 +1036,7 @@ int pstraverse(struct command_t *command) {
 		return -1;	
 	}
 
-	/*
+	int root_pid = atoi(command->args[1]);
 
 	char* mod_dfs[] = {"dfs_module.ko"};
 	char* mod_bfs[] = {"bfs_module.ko"};
@@ -1054,12 +1046,9 @@ int pstraverse(struct command_t *command) {
 		execvp("sudo rmmod", mod_dfs);
 	} else if (strcmp(command->args[1], "-b") == 0) {
 		execvp("sudo insmod",mod_bfs);
-		execvp("sudo insmod",mod_bfs);
+		execvp("sudo rmmod",mod_bfs);
 	}
 
-	return SUCCESS;*/
 
-	//pid_t root_pid = command->args[1];
-
-
+	return SUCCESS;
 }
