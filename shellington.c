@@ -915,11 +915,15 @@ int pstraverse(struct command_t *command) {
 		return -1;	
 	}
 
-	char*  mod_dfs[] = {"dfs_module.ko"};
+	char* mod_dfs[] = {"dfs_module.ko"};
+	char* mod_bfs[] = {"bfs_module.ko"};
 
 	if(strcmp(command->args[1], "-d") == 0) {
 		execvp("sudo insmod",mod_dfs);
 		execvp("sudo rmmod", mod_dfs);
+	} else if (strcmp(command->args[1], "-b") == 0) {
+		execvp("sudo insmod",mod_bfs);
+		execvp("sudo insmod",mod_bfs);
 	}
 
 	return SUCCESS;
