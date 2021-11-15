@@ -1,1 +1,1 @@
-11 23 * * * XDG_RUNTIME_DIR=/run/user/$(id -u) /usr/bin/notify-send "heyyo"
+45 15 * * * XDG_RUNTIME_DIR=/run/user/$(id -u) /usr/bin/notify-send "done"
