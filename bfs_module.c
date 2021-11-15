@@ -3,6 +3,16 @@
 #include <linux/sched.h>
 #include <linux/sched/task.h>
 #include <linux/module.h>
+#include <linux/moduleparam.h>
+#include <linux/stat.h>
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Beyza-Kerem");
+MODULE_DESCRIPTION("Process Tree BFS");
+
+static int PID = 0;
+module_param(PID, int, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+MODULE_PARM_DESC(PID, "An integer");
 
 // BFS over a process tree
 void bfs(struct task_struct *task) {
@@ -30,7 +40,8 @@ void bfs(struct task_struct *task) {
 
 int bfs_traverse_init(void) {
 	printk(KERN_INFO "Loading BFS Traverse Module...\n");
-	bfs(&init_task);
+	struct task_struct *first = get_pid_task(find_get_pid(PID), PIDTYPE_PID);
+	bfs(first);
 	return 0;
 }
 
@@ -40,9 +51,4 @@ void bfs_traverse_exit(void) {
 
 module_init(bfs_traverse_init);
 module_exit(bfs_traverse_exit);
-
-
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Beyza-Kerem");
-MODULE_DESCRIPTION("Process Tree BFS");
 
