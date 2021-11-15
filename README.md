@@ -99,3 +99,13 @@ pstraverse 1 -d
 
 pstraverse 1177 -d
 ```
+
+To check the process tree prints by kernel module
+```bash
+dmesg
+```
+
+To clear dmesg
+```bash
+sudo dmesg --clear
+```
