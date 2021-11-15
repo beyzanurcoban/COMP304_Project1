@@ -90,6 +90,7 @@ kerem protester my-message-here
 ```
 
 ### PS Traverse Command
+Before using this command, make sure that you run "make" command first. Necessary files will be generated during make call.
 
 To traverse in DFS (first argument is PID)
 ```bash
