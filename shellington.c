@@ -13,6 +13,8 @@ const char * sysname = "shellington";
 #define PATH_LEN  2048
 char short_cmm_list[PATH_LEN];
 
+#define MAP_SIZE  10
+
 struct bmnode *bmhead = NULL;
 struct bmnode *bmcurrent = NULL;
 
@@ -31,12 +33,22 @@ struct command_t {
 	struct command_t *next; // for piping
 };
 
+// Key-Value Map Entry Structure
+typedef struct {
+	int full;
+	char alias[20];
+	char directory[PATH_LEN];
+} map_entry_t;
+
+map_entry_t map_table[MAP_SIZE];
+
 // Bookmark Node Structure (LinkedList)
 struct bmnode {
 	int key;
 	struct command_t *command;
 	struct bmnode *next;
 };
+
 /**
  * Prints a command struct
  * @param struct command_t *
@@ -345,7 +357,7 @@ int main()
 // Function Declarations
 int crobtab(struct command_t *command, char *file_name);
 void remindme_command(struct command_t *command);
-//int short_command(struct command_t *command);
+int short_command(struct command_t *command);
 //void is_key_exist(char *key);
 int bookmark_command(struct command_t *command);
 void printAllBookmarks();
@@ -384,10 +396,10 @@ int process_command(struct command_t *command)
 		return SUCCESS;
 	}
 
-	/*if (strcmp(command->name, "short") == 0) {
+	if (strcmp(command->name, "short") == 0) {
 		short_command(command);
 		return SUCCESS;
-	}*/
+	}
 
 	if(strcmp(command->name, "bookmark") == 0) {
 		bookmark_command(command);
@@ -542,58 +554,71 @@ void remindme_command(struct command_t *command) {
 	execlp("crontab", "crontab", cron_file, NULL);
 }
 
-/*int short_command(struct command_t *command) {
-	if(command->args[0] == NULL || command->args[1] == NULL) {
-		perror("Not enough argument to run short command\n");
-		return -1;	
-	}
+int short_command(struct command_t *command) {
 
-	char *indicator = (char *)malloc(strlen(command->args[0])+1);
-	strcpy(indicator, command->args[0]);
-
-	char *name = (char *)malloc(strlen(command->args[1])+1);
-	strcpy(name, command->args[1]);
-
-	if (strcmp(indicator, "set") == 0) {
-		is_key_exist(name);
-
-	} else if (strcmp(indicator, "jump") == 0) {
-		
-	} else {
-		perror("You did not provide a valid option for short command\n");
+	if(command->arg_count < 2) {
+		perror("Not enough arguments to execute short\n");
 		return -1;
 	}
-}
 
-void is_key_exist(char *key) {
-	char line[512];
-	FILE *file = fopen(short_cmm_list, "r");
-	FILE *tmpfile = fopen("tmpfile.txt", "w");
-	int count = 1;
+	char *opt = (char *)malloc(strlen(command->args[0])+1);
+	strcpy(opt, command->args[0]);
 
-	if(file ==  NULL || tmpfile == NULL) {
-		perror("Cannot open the file!\n");
+	char *arg_short = (char *)malloc(strlen(command->args[1])+1);
+	strcpy(arg_short, command->args[1]);
+
+	if(strcmp(opt, "set") == 0) {
+		// Store current directory in map_table with key alias (arg_short)
+
+		int i;
+		for(i=0; i<MAP_SIZE; i++) {
+			if( map_table[i].full == 0 || (strcmp(map_table[i].alias, arg_short) == 0) ) {
+
+				char cwd[PATH_LEN];
+				getcwd(cwd, sizeof(cwd));
+
+				strcpy(map_table[i].alias, arg_short);
+				strcpy(map_table[i].directory, cwd);
+				map_table[i].full = 1;
+
+				return 1;
+			}
+		}
+
+		printf("Map Table full!\n");
+		return -1;
 	}
+	else if (strcmp(opt, "jump") == 0) {
+		// Search arg_short for key in map_table, execute cd with its value
+		
+		int i;
+		for(i=0; i<MAP_SIZE; i++) {
+			if(map_table[i].full != 0) {
+				if(strcmp(map_table[i].alias, arg_short) == 0) {
+					chdir(map_table[i].directory);
+				}
+			}
+		}
+	}
+	else if(strcmp(opt, "view") == 0 && strcmp(arg_short, "all") == 0) {
+		// View all directories stored
+		
+		printf("Viewing all directories\n");
 
-	rewind(file);
-
-
-	while(fgets(line, 512, file)) {
-		char *token = strtok(line, " ");
-
-		if(strcmp(key, token) != 0) {
-			fputs(line, tmpfile);	
+		int i;
+		for(i=0; i<MAP_SIZE; i++) {
+			if(map_table[i].full == 1) {
+				printf("\t%s\t%s\n", map_table[i].alias, map_table[i].directory);
+			}
 		}
 
 	}
-
-	fclose(file);
-	fclose(tmpfile);
-
-	remove(short_cmm_list);
-	rename(tmpfile, short_cmm_list);
-
-} */
+	else {
+		printf("Non-permitted use of short.\n");
+		return -1;
+	}
+}
+	
 
 int bookmark_command(struct command_t *command) {
 	if(command->arg_count == 2) {
