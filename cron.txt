@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 45 15 * * * XDG_RUNTIME_DIR=/run/user/$(id -u) /usr/bin/notify-send "done"
+=======
+30 12 * * * XDG_RUNTIME_DIR=/run/user/$(id -u) /usr/bin/notify-send "wow"
+50 12 * * * XDG_RUNTIME_DIR=/run/user/$(id -u) /usr/bin/notify-send "amaniiin"
+>>>>>>> b88d187437034775b600e21d01d4894ae5c28664
