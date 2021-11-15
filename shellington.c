@@ -1010,12 +1010,36 @@ int beyza_awesome_command(struct command_t *command) {
 		tm->tm_hour = s/3600;
 
 		mktime(tm);
-
+	
+		system("clear");
 		printf("%02d:%02d:%02d\n", tm->tm_hour, tm->tm_min, tm->tm_sec);
 		s--;
 		seconds--;
 		waitSec(1);
 	}
+
+	printf("\n\n");
+	printf("                -hNd\n");
+	printf("                -NN:\n");
+	printf("              :yNMNy:\n");
+	printf("         `/syhMd:.:dMhys+.\n");
+	printf("        +Nms+hMs   sMh+odNy`\n");
+	printf("       /Md.  `yNdhdNy`  `sMy\n");
+	printf("    -smmm/     .:/:.     .mNms-\n");
+	printf("   +Nd/.`                 `./dN+\n");
+	printf("  `NN.                       .NN`\n");
+	printf("  `NN.      ..       -.      .NN`\n");
+	printf("   +Nd/.`..+mNs-.`.:yNm+..`./dN+\n");
+	printf("    -sNNddmMh/hmmmmmy/hMmddNNs-\n");
+	printf("      /Mm-/Mm  `sMs`  mM/-mM/\n");
+	printf("       mM- dM:  oMo  :Md -Mm\n");
+	printf("       +My /Md  oMo  dM/ yM+\n");
+	printf("       `NM. mM- oMo -Mm .MN`\n");
+	printf("        +Md-oMh`sMs`hMo-dM+\n");
+	printf("         :hNMMMMMMMMMMMNh:\n");
+
+
+	printf("\n\n");
 	
 	system(music);
 	
