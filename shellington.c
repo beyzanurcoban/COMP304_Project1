@@ -529,7 +529,7 @@ int crontab(struct command_t *command, char *file_name) {
 	snprintf(cmm_line, cmm_line_len, "%s %s %s %s %s %s \"%s\"", minute, hour, "*", "*", "*", notify_cmm, message);
 
 	FILE *file;
-	file = fopen(file_name, "w");
+	file = fopen(file_name, "a");
 
 	if(file != NULL) {
 		strcat(cmm_line, "\n");
