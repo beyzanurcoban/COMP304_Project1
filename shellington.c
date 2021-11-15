@@ -44,12 +44,11 @@ map_entry_t map_table[MAP_SIZE];
 // Bookmark Node Structure (LinkedList)
 struct bmnode {
 	int key;
-	//struct command_t *command;
 	struct bmnode *next;
 	char book[256];
 };
 
-struct bmnode *bmhead = NULL;
+struct bmnode *bmhead = NULL; //head node of the linked list
 struct bmnode *bmcurrent = NULL;
 
 /**
@@ -121,27 +120,33 @@ int show_prompt()
  */
 int parse_command(char *buf, struct command_t *command)
 {
-
+	/* Starting from here, until the end of the first if statement:
+	 * This part takes the user input and turns it into a struct command_t.
+	 * Specifically, if user provides bookmark command with an "argument", 
+	 * the parser takes this string and breaks into two pices: command name and command arg.
+	 * Even if arg part can contain a space, we should count it as 1 because it is a whole.
+	 * Ex: bookmark "cd .." means that comman->name = bookmark, command->args[0] = "cd .."
+	 * Do not break "cd .." as "cd" and "..", keep them together.
+	 */
 	char str[256] = "";
 	strcat(str, buf);
 	char *token = strtok(str, " \"");
-
 
 	if(strcmp(token, "bookmark") == 0) {
 		command->name=(char *)malloc(strlen(token)+1);
 		strcpy(command->name, token);
 
-		char ar[1] = "";
+		char ar[1] = ""; // first char of the argument part
 
 		token = strtok(NULL, "");
 		strncat(ar, token, 1);
 
-		if (strcmp(ar, "\"") == 0) {
-			int arg_i = 0;
+		if (strcmp(ar, "\"") == 0) { // if first char is quatotion mark, it means that we are adding new bookmarks
+			int arg_i = 0; // to add a bookmark, we only have 1 argument, arg_index = 0
                 	command->args=(char **)malloc(sizeof(char *)*2);
                 	command->args[arg_i]=(char *)malloc(strlen(token)+1);
-                	strcpy(command->args[arg_i], token);
-                	command->arg_count = 1;
+                	strcpy(command->args[arg_i], token); // command->args[0] will be the command that we add as a bookmark
+                	command->arg_count = 1; // arg count will be exactly 1 if we are adding a new bookmark command
                 	return SUCCESS;
 
 		}
@@ -359,7 +364,9 @@ int prompt(struct command_t *command)
 int process_command(struct command_t *command);
 int main()
 {
-
+	/* Print the current directory, so you can find the path of the project easily.
+	 * You can change the PATH variables defined at the beginning of this file according to the printed current directory.
+	 */
 	if (getcwd(short_cmm_list, sizeof(short_cmm_list)) != NULL) {
 		printf("Current working dir: %s\n", short_cmm_list);
 		strcat(short_cmm_list, "/s_list.txt");
@@ -421,6 +428,7 @@ int process_command(struct command_t *command)
 		}
 	}
 
+	// Correct function calls according to the provided command name
 	if (strcmp(command->name, "remindme") == 0) {
 		remindme_command(command);
 		return SUCCESS;
@@ -526,6 +534,7 @@ int process_command(struct command_t *command)
 	return UNKNOWN;
 }
 
+// Method that creates a cron.txt file 
 int crontab(struct command_t *command, char *file_name) {
 	if(command->args[0] == NULL) {
 		perror("There is no enough argument to run remindme command!");
@@ -553,9 +562,10 @@ int crontab(struct command_t *command, char *file_name) {
 	
 	char *notify_cmm = "XDG_RUNTIME_DIR=/run/user/$(id -u) /usr/bin/notify-send";
 
-	int cmm_line_len = strlen(minute) + strlen(hour) + 3 + strlen(notify_cmm) + strlen(message) + 10;
+	int cmm_line_len = strlen(minute) + strlen(hour) + 3 + strlen(notify_cmm) + strlen(message) + 50;
 
 	char *cmm_line = (char *)malloc(sizeof(char) * cmm_line_len);
+	// generate the (minute, hour, day of month, month, day of week) structure, and append command and message
 	snprintf(cmm_line, cmm_line_len, "%s %s %s %s %s %s \"%s\"", minute, hour, "*", "*", "*", notify_cmm, message);
 
 	FILE *file;
@@ -578,12 +588,15 @@ int crontab(struct command_t *command, char *file_name) {
 	}
 }
 
+// Method that creates a cron file and attach it to the crontab of the system, so it works
 void remindme_command(struct command_t *command) {
 	char *cron_file = "cron.txt";
 	crontab(command, cron_file);
 	execlp("crontab", "crontab", cron_file, NULL);
 }
 
+// Method to set short names for the directories
+// You can view all saved directories by typing "short view all"
 int short_command(struct command_t *command) {
 
 	if(command->arg_count < 2) {
@@ -649,16 +662,18 @@ int short_command(struct command_t *command) {
 	}
 }
 	
-
+// Method that checks the arguments of bookmark command and calls an appropriate function
 int bookmark_command(struct command_t *command) {
-
+	
+	// add a new bookmark or list cases
 	if (command->arg_count == 1) {
 		if (strcmp(command->args[0], "-l") == 0) {
 			printAllBookmarks();
 		} else {
 			addBookmark(command);
 		}
-
+	
+	// delete or run cases	
 	} else if (command->arg_count == 2) {
 		if (strcmp(command->args[0], "-d") == 0) {
 			int bm_index = atoi(command->args[1]);
@@ -720,6 +735,7 @@ void printAllBookmarks() {
 	}
 }
 
+// Method that checks the bookmark list 
 bool bookmarkIsEmpty() {
 	struct bmnode** head_ref = &bmhead;
 	return *head_ref == NULL;	
@@ -741,6 +757,7 @@ int bookmarkLength() {
 	return length;
 }
 
+// Method that returns the struct bmnode according to a given key
 struct bmnode* findBookmark(int key) {
 	struct bmnode** head_ref = &bmhead;
 	struct bmnode* bmcurrent = *head_ref;
@@ -1006,11 +1023,13 @@ int beyza_awesome_command(struct command_t *command) {
 
 }	
 
+// Method for arrange the timer
 void waitSec(int sec) {
 	clock_t ending = clock() + (sec * CLOCKS_PER_SEC);
 	while (clock() < ending) {}
 }
 
+// Method for loading the kernel module
 int pstraverse(struct command_t *command) {
 	if(command->arg_count !=2) {
 		perror("The user did not enter the arguments correctly. Please provide a PID and search method -d or -b.\n");
@@ -1029,6 +1048,7 @@ int pstraverse(struct command_t *command) {
 		execvp("sudo insmod",mod_bfs);
 		execvp("sudo rmmod",mod_bfs);
 	}
+
 
 	return SUCCESS;
 }

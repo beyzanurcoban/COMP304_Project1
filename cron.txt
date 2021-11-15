@@ -1,2 +1,4 @@
 30 12 * * * XDG_RUNTIME_DIR=/run/user/$(id -u) /usr/bin/notify-send "wow"
 50 12 * * * XDG_RUNTIME_DIR=/run/user/$(id -u) /usr/bin/notify-send "amaniiin"
+15 19 * * * XDG_RUNTIME_DIR=/run/user/$(id -u) /usr/bin/notify-send "uwu"
+57 19 * * * XDG_RUNTIME_DIR=/run/user/$(id -u) /usr/bin/notify-send "._."
