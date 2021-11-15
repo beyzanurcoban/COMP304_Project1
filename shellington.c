@@ -695,21 +695,15 @@ int bookmark_command(struct command_t *command) {
 			} else {
 				struct bmnode* bm = findBookmark(bm_index);
 				char *buf = bm->book;
-				system(buf);
-				/*struct command_t *comm = (struct command_t*)malloc(sizeof(struct command_t));
 
-				printf("Buffer = %s\n", buf);
+				struct command_t *comm = (struct command_t*)malloc(sizeof(struct command_t));
 
 				char sub_buf[strlen(buf)-1];
 				memcpy(sub_buf, &buf[1], strlen(buf)-2);
 				sub_buf[strlen(buf)-2] = '\0';
-
-				printf("New Buffer = %s\n", sub_buf);
 				
-				parse_command(buf, comm);
-				printf("Command name = %s\n", comm->name);
-				printf("Command arg = %d\n", comm->arg_count);
-				process_command(comm);*/
+				parse_command(sub_buf, comm);
+				process_command(comm);
 			}
 
 		} else {
@@ -832,6 +826,15 @@ int deleteBookmark(int key) {
 
 	bmprevious->next = bmcurrent->next;
 	free(bmcurrent);
+
+	// re-index all entries
+	struct bmnode* indexer = *head_ref;
+
+	int i;
+	for(i=0; i<bookmarkLength(); i++) {
+		indexer->key = i;
+		indexer = indexer->next;
+	}
 	return SUCCESS;
 	
 }
