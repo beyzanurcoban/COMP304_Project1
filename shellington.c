@@ -33,8 +33,8 @@ struct command_t {
 
 // Bookmark Node Structure (LinkedList)
 struct bmnode {
-	struct command_t *command;
 	int key;
+	struct command_t *command;
 	struct bmnode *next;
 };
 /**
@@ -352,7 +352,7 @@ void printAllBookmarks();
 bool bookmarkIsEmpty();
 int bookmarkLength();
 struct bmnode* findBookmark(int key);
-void addBookmark(struct command_t *command);
+void addBookmark(char *supplied_command);
 int deleteBookmark(int key);
 int kerem_awesome_command(struct command_t *command);
 int beyza_awesome_command(struct command_t *command);
@@ -601,8 +601,12 @@ int bookmark_command(struct command_t *command) {
 		if(strcmp(command->args[0], "-i") == 0) {
 			// Execute command at index
 			int bm_index = atoi(command->args[1]);
-			
-			process_command(findBookmark(bm_index)->command);
+
+			if(bm_index < bookmarkLength()) {
+				process_command(findBookmark(bm_index)->command);
+			} else {
+				printf("\nIndex out of bounds\n");
+			}
 		}
 	
 		if(strcmp(command->args[0], "-d") == 0) {
@@ -634,12 +638,12 @@ int bookmark_command(struct command_t *command) {
 
 void printAllBookmarks() {
 	struct bmnode *ptr = bmhead;
-	printf("\nCurrent Bookmarks\n");
+	printf("Current Bookmarks\n\n");
 	
-	int i=0, j;
+	int i=0;
 	while(ptr != NULL) {
-		printf("\t %d %s", i, ptr->command->name);
-		for(j=0; j<(ptr->command->arg_count); j++) printf(" %s", ptr->command->args[j]);
+		printf("\t %d ", i);
+		print_command(ptr->command);
 		printf("\n");
 		i++;
 		ptr = ptr->next;
@@ -664,7 +668,7 @@ int bookmarkLength() {
 struct bmnode* findBookmark(int key) {
 	struct bmnode* bmcurrent = bmhead;
 	
-	if(bmhead == NULL) return NULL;
+	if(bookmarkIsEmpty()) return NULL;
 	
 	while(bmcurrent->key != key) {
 		if(bmcurrent->next == NULL) {
@@ -677,22 +681,32 @@ struct bmnode* findBookmark(int key) {
 	return bmcurrent;
 }
 
-void addBookmark(struct command_t *command) {
+void addBookmark(char *supplied_command) {
 	struct bmnode *new = (struct bmnode*) malloc(sizeof(struct bmnode));
 	
 	struct bmnode *ptr = bmhead;
 	
+	struct command_t *new_command;
+	char buf[4096];
+
+	strcpy(buf, supplied_command);
+	parse_command(buf, new_command);
+	
 	int i=0;
-	while(ptr != NULL) {
-		i++;
-		ptr = ptr->next;
+	if(ptr != NULL) {
+		while(ptr->next != NULL) {
+			i++;
+			ptr = ptr->next;
+		}
 	}
 	
 	new->key = i;
 	new->next = NULL;
-	new->command = command;
+	new->command = new_command;
 	
-	ptr->next = new;
+	if(ptr != NULL) {
+		ptr->next = new;
+	}
 }
 
 int deleteBookmark(int key) {

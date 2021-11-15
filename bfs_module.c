@@ -10,11 +10,22 @@ void bfs(struct task_struct *task) {
      struct list_head *list;
 	
 	    printk(KERN_INFO "Name: %s, Process ID: %d\n", task->comm, task->pid);
-	
-	    list_for_each(list, &task->sibling) {
-		        next = list_entry(list, struct task_struct, children);
-		        bfs(next);
-	    }
+
+	   /* if (&task->sibling == NULL) {
+		    printk(KERN_INFO "task has no sibling\n");
+		    next = list_entry(&task->children, struct task_struct, sibling);
+	 	    bfs(next);
+	    } else {
+		    printk(KERN_INFO "task has sibling\n");
+
+	    	    list_for_each(list, &task->sibling) {
+			    printk(KERN_INFO "inside loop\n");
+			    next = list_entry(list, struct task_struct, sibling);
+			    printk(KERN_INFO "%s\n", next->comm);
+		            bfs(next);
+	    	    }
+	    }*/
+
 }
 
 int bfs_traverse_init(void) {
